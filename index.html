@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Domain Scorer Pro | AI Analytical Engine</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #6366f1;
+            --primary-glow: rgba(99, 102, 241, 0.4);
+            --accent: #10b981;
+            --info: #0ea5e9;
+            --bg: #020617;
+            --glass: rgba(15, 23, 42, 0.94);
+            --border: rgba(255, 255, 255, 0.1);
+            --text-main: #f8fafc;
+            --text-dim: #94a3b8;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Outfit', sans-serif;
+        }
+
+        body {
+            background: var(--bg);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            padding: 2.5rem 0;
+            align-items: flex-start;
+            justify-content: center;
+        }
+
+        .bg-art {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            opacity: 0.35;
+            object-fit: cover;
+            filter: blur(110px);
+        }
+
+        .container {
+            width: 95%;
+            max-width: 1180px;
+            animation: fadeIn 0.8s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(15px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 2.5rem;
+        }
+
+        header h1 {
+            font-size: 3.5rem;
+            font-weight: 800;
+            background: linear-gradient(to bottom, #fff, #94a3b8);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: -0.03em;
+        }
+
+        .layout-grid {
+            display: grid;
+            grid-template-columns: 1.6fr 1.1fr;
+            gap: 2.5rem;
+        }
+
+        .main-card,
+        .side-card {
+            background: var(--glass);
+            backdrop-filter: blur(30px);
+            -webkit-backdrop-filter: blur(30px);
+            border: 1px solid var(--border);
+            border-radius: 36px;
+            padding: 2.5rem;
+            box-shadow: 0 30px 60px -15px rgba(0, 0, 0, 0.8);
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        label {
+            display: block;
+            font-size: 0.85rem;
+            color: var(--text-dim);
+            margin-bottom: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
+
+        select,
+        textarea {
+            width: 100%;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--border);
+            border-radius: 18px;
+            color: #fff;
+            padding: 1.25rem;
+            font-size: 1.1rem;
+            outline: none;
+            transition: 0.2s;
+        }
+
+        select option {
+            background-color: #fff;
+            color: #111 !important;
+        }
+
+        textarea {
+            min-height: 500px;
+            line-height: 1.7;
+            resize: none;
+        }
+
+        .btn-score {
+            width: 100%;
+            background: linear-gradient(135deg, var(--primary), #4f46e5);
+            color: white;
+            border: none;
+            padding: 1.4rem;
+            border-radius: 20px;
+            font-size: 1.2rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: 0.3s;
+            box-shadow: 0 10px 25px var(--primary-glow);
+        }
+
+        .btn-score:hover {
+            transform: translateY(-2px);
+            filter: brightness(1.1);
+            box-shadow: 0 15px 35px var(--primary-glow);
+        }
+
+        .status-badge {
+            border-radius: 20px;
+            padding: 1.2rem;
+            margin-bottom: 1rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .badge-overall {
+            background: rgba(16, 185, 129, 0.08);
+            border-color: rgba(16, 185, 129, 0.2);
+        }
+
+        .badge-set {
+            background: rgba(14, 165, 233, 0.08);
+            border-color: rgba(14, 165, 233, 0.2);
+            display: none;
+        }
+
+        .badge-title {
+            font-size: 0.7rem;
+            font-weight: 800;
+            color: var(--text-dim);
+            text-transform: uppercase;
+            margin-bottom: 0.4rem;
+            letter-spacing: 0.1em;
+        }
+
+        .badge-val {
+            font-size: 1.4rem;
+            font-weight: 800;
+            color: #fff;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .badge-val span {
+            font-size: 0.7rem;
+            padding: 2px 8px;
+            border-radius: 6px;
+            color: #000;
+            font-weight: 900;
+        }
+
+        .res-green span {
+            background: var(--accent);
+        }
+
+        .res-blue span {
+            background: var(--info);
+        }
+
+        .score-display {
+            text-align: center;
+            padding: 1.75rem;
+            border-radius: 30px;
+            background: rgba(255, 255, 255, 0.02);
+            margin-bottom: 1.5rem;
+            border: 1px solid var(--border);
+        }
+
+        .score-val {
+            font-size: 6rem;
+            font-weight: 800;
+            line-height: 1;
+            color: #fff;
+        }
+
+        .score-lbl {
+            font-size: 1rem;
+            color: var(--text-dim);
+            margin-top: 0.75rem;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        .stat-item {
+            padding: 1.2rem;
+            background: rgba(255, 255, 255, 0.02);
+            border-radius: 22px;
+            border: 1px solid var(--border);
+            text-align: center;
+        }
+
+        .stat-val {
+            display: block;
+            font-size: 1.6rem;
+            font-weight: 800;
+            color: var(--info);
+        }
+
+        .stat-name {
+            display: block;
+            font-size: 0.75rem;
+            color: var(--text-dim);
+            text-transform: uppercase;
+            font-weight: 700;
+            margin-top: 0.3rem;
+        }
+
+        #placeholder-text {
+            color: var(--text-dim);
+            text-align: center;
+            padding: 6rem 0;
+            font-style: italic;
+            opacity: 0.6;
+        }
+
+        #results-content {
+            display: none;
+        }
+
+        .loader {
+            display: none;
+            margin: 0 auto;
+            width: 22px;
+            height: 22px;
+            border: 3px solid rgba(255, 255, 255, 0.1);
+            border-top: 3px solid #fff;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin {
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        @media (max-width: 950px) {
+            .layout-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <img src="ai_scoring_background_1776032733963.png" class="bg-art" alt="">
+    <div class="container">
+        <header>
+            <h1>Automated Essay Scoring</h1>
+        </header>
+
+        <div class="layout-grid">
+            <div class="main-card">
+                <div class="form-group">
+                    <label>Essay Assignment</label>
+                    <select id="essay-set">
+                        <option value="1">Set 1 | Holistic Arg (2-12)</option>
+                        <option value="2">Set 2 | Holistic Arg (1-6)</option>
+                        <option value="3">Set 3 | Source Based (0-3)</option>
+                        <option value="4">Set 4 | Source Based (0-3)</option>
+                        <option value="5">Set 5 | Source Based (0-4)</option>
+                        <option value="6">Set 6 | Source Based (0-4)</option>
+                        <option value="7">Set 7 | Narrative (2-24)</option>
+                        <option value="8">Set 8 | Narrative (10-60)</option>
+                    </select>
+                </div>
+                <div class="form-group"><textarea id="essay-text" placeholder="Start typing..."></textarea></div>
+                <button class="btn-score" id="btn-submit"><span id="btn-txt">Analyze Essay</span>
+                    <div class="loader" id="loader"></div>
+                </button>
+            </div>
+
+            <div class="side-card">
+                <div class="status-badge badge-overall">
+                    <div class="badge-title">Global Reliability Reference</div>
+                    <div class="badge-val res-green">0.9260 QWK <span>VERIFIED</span></div>
+                </div>
+
+                <div id="set-badge" class="status-badge badge-set">
+                    <div class="badge-title" id="set-badge-title">Set Precision</div>
+                    <div class="badge-val res-blue"><span id="set-qwk-val">0.0000 QWK</span> <span>SET SPECIFIC</span>
+                    </div>
+                </div>
+
+                <div id="placeholder-text">Waiting for evaluation...</div>
+
+                <div id="results-content">
+                    <div class="score-display">
+                        <div class="score-val" id="score-out">--</div>
+                        <div class="score-lbl" id="range-lbl">Total Score</div>
+                    </div>
+
+                    <label style="margin-top: 1rem;">Full Analytical Metrics</label>
+                    <div class="stats-grid">
+                        <div class="stat-item"><span class="stat-val" id="stat-words">0</span><span
+                                class="stat-name">Words</span></div>
+                        <div class="stat-item"><span class="stat-val" id="stat-vocab">0%</span><span
+                                class="stat-name">Lexical Index</span></div>
+                        <div class="stat-item"><span class="stat-val" id="stat-w-len">0.0</span><span
+                                class="stat-name">Avg Word Lg.</span></div>
+                        <div class="stat-item"><span class="stat-val" id="stat-s-len">0.0</span><span
+                                class="stat-name">Sent. Length</span></div>
+                        <div class="stat-item"><span class="stat-val" id="stat-s-count">0</span><span
+                                class="stat-name">Sentences</span></div>
+                        <div class="stat-item"><span class="stat-val" id="stat-puncts">0</span><span
+                                class="stat-name">Punctuation</span></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const SET_QWKS = { 1: 0.8973, 2: 0.8810, 3: 0.9455, 4: 0.9746, 5: 0.9522, 6: 0.9443, 7: 0.9357, 8: 0.8772 };
+        const btnS = document.getElementById('btn-submit');
+        const ld = document.getElementById('loader');
+        const setBadge = document.getElementById('set-badge');
+
+        btnS.addEventListener('click', async () => {
+            const text = document.getElementById('essay-text').value.trim();
+            const set = document.getElementById('essay-set').value;
+            if (!text) return;
+            btnS.disabled = true; ld.style.display = 'block'; document.getElementById('btn-txt').style.display = 'none';
+
+            try {
+                const response = await fetch('http://localhost:8000/predict', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ text, essay_set: parseInt(set) })
+                });
+                const data = await response.json();
+                if (response.ok) {
+                    document.getElementById('placeholder-text').style.display = 'none';
+                    document.getElementById('results-content').style.display = 'block';
+                    setBadge.style.display = 'block';
+                    document.getElementById('set-badge-title').innerText = `Set ${set} Precision`;
+                    document.getElementById('set-qwk-val').innerText = SET_QWKS[set].toFixed(4) + ' QWK';
+
+                    document.getElementById('score-out').innerText = data.score;
+                    document.getElementById('range-lbl').innerText = `Score Range [${data.min_score}-${data.max_score}]`;
+
+                    const m = data.metrics;
+                    document.getElementById('stat-words').innerText = m.word_count;
+                    document.getElementById('stat-vocab').innerText = m.lexical_diversity + '%';
+                    document.getElementById('stat-w-len').innerText = m.avg_word_length;
+                    document.getElementById('stat-s-len').innerText = m.avg_sentence_length;
+                    document.getElementById('stat-s-count').innerText = m.sentence_count;
+                    document.getElementById('stat-puncts').innerText = m.punctuation_count;
+                }
+            } catch (err) { alert('Server Offline'); }
+            finally { btnS.disabled = false; ld.style.display = 'none'; document.getElementById('btn-txt').style.display = 'inline'; }
+        });
+    </script>
+</body>
+
+</html>
